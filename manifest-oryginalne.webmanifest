@@ -1,0 +1,33 @@
+{
+  "id": "/oryginalne-opracowania/",
+  "name": "Oryginalne Aranżacje",
+  "short_name": "Oryginalne Aranżacje",
+  "description": "Interaktywny konspekt Oryginalne Aranżacje od Wujka Szpona.",
+  "lang": "pl",
+  "start_url": "/oryginalne-opracowania/",
+  "scope": "/oryginalne-opracowania/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://wujekszpon.github.io/oryginalne-opracowania/manifest-oryginalne.webmanifest",
+      "id": "https://wujekszpon.github.io/oryginalne-opracowania/"
+    }
+  ],
+  "icons": [
+    {
+      "src": "./pwa-oryginalne-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./pwa-oryginalne-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
