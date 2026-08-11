@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oryginalne-opracowania-v1';
+const CACHE_NAME = 'oryginalne-opracowania-v2';
 const APP_SHELL = [
   './',
   './manifest-oryginalne.webmanifest',
