@@ -1908,27 +1908,58 @@ function setPreviewFavoriteButton(id) {
   button.setAttribute('aria-pressed', String(isFavorite));
 }
 
+function coverUrlCandidates(entry) {
+  const exactName = entry.okladka || `${entry.nazwa} - ${entry.wykonawca}`;
+  const fallbackName = entry.okladka
+    ? String(entry.okladka).replace(/[.\s]+$/u, '')
+    : `${String(entry.nazwa).replace(/[.\s]+$/u, '')} - ${String(entry.wykonawca).replace(/[.\s]+$/u, '')}`;
+  const names = [...new Set([exactName, fallbackName].filter(Boolean))];
+  return names.flatMap(name => {
+    const base = `${REPO_BASE}/okladki/${encodeURIComponent(name)}`;
+    return [`${base}.png`, `${base}.jpg`];
+  });
+}
+
+function handleCoverImageError(image) {
+  const candidates = JSON.parse(decodeURIComponent(image.dataset.coverCandidates || '%5B%5D'));
+  const nextIndex = Number(image.dataset.coverIndex || 0) + 1;
+  if (nextIndex < candidates.length) {
+    image.dataset.coverIndex = String(nextIndex);
+    image.src = candidates[nextIndex];
+    return;
+  }
+  image.style.display = 'none';
+  const fallback = image.dataset.coverFallbackId
+    ? document.getElementById(image.dataset.coverFallbackId)
+    : image.nextElementSibling;
+  if (fallback) fallback.style.display = image.dataset.coverFallbackDisplay || 'flex';
+}
+
+function coverImageAttributes(entry, fallbackDisplay = 'flex') {
+  const candidates = coverUrlCandidates(entry);
+  return `src="${candidates[0]}" data-cover-candidates="${encodeURIComponent(JSON.stringify(candidates))}" data-cover-index="0" data-cover-fallback-display="${fallbackDisplay}" onerror="handleCoverImageError(this)"`;
+}
+
+function setPreviewCoverImage(image, entry) {
+  const candidates = coverUrlCandidates(entry);
+  image.dataset.coverCandidates = encodeURIComponent(JSON.stringify(candidates));
+  image.dataset.coverIndex = '0';
+  image.dataset.coverFallbackId = 'card-preview-fallback';
+  image.dataset.coverFallbackDisplay = 'flex';
+  image.onerror = function() { handleCoverImageError(this); };
+  image.src = candidates[0];
+}
+
 function openCardPreview(id) {
   const entry = exercises.find(item => item.id === id);
   if (!entry) return;
   activePreviewEntryId = id;
-  const coverName = entry.okladka || `${entry.nazwa} - ${entry.wykonawca}`;
-  const encodedCover = `${REPO_BASE}/okladki/${encodeURIComponent(coverName)}`;
   const image = document.getElementById('card-preview-image');
   const fallback = document.getElementById('card-preview-fallback');
   image.style.display = 'block';
   fallback.style.display = 'none';
   image.alt = `Okładka: ${entry.nazwa}`;
-  image.dataset.fallbackSrc = `${encodedCover}.jpg`;
-  image.onerror = function() {
-    if (this.dataset.fallbackSrc && this.src !== this.dataset.fallbackSrc) {
-      this.src = this.dataset.fallbackSrc;
-      return;
-    }
-    this.style.display = 'none';
-    fallback.style.display = 'flex';
-  };
-  image.src = `${encodedCover}.png`;
+  setPreviewCoverImage(image, entry);
 
   document.getElementById('card-preview-stars').innerHTML = difficultyStars(entry.poziom);
   document.getElementById('card-preview-title').textContent = entry.wykonawca ? `${entry.nazwa} - ${entry.wykonawca}` : entry.nazwa;
@@ -2044,9 +2075,7 @@ function markPendingNewItemsAsSeen() {
 }
 
 function newItemCoverHtml(entry) {
-  const coverName = entry.okladka || `${entry.nazwa} - ${entry.wykonawca}`;
-  const base = `${REPO_BASE}/okladki/${encodeURIComponent(coverName)}`;
-  return `<img src="${base}.png" alt="${escapeExportHtml(entry.nazwa)}" loading="lazy" data-fallback="${base}.jpg" onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src=this.dataset.fallback}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><span class="thumb-icon" style="display:none">🎸</span>`;
+  return `<img ${coverImageAttributes(entry)} alt="${escapeExportHtml(entry.nazwa)}" loading="lazy"><span class="thumb-icon" style="display:none">🎸</span>`;
 }
 
 function openNewItemsModal(items) {
@@ -3592,9 +3621,7 @@ function render() {
   msg.style.display = 'none';
 
   grid.innerHTML = filtered.map(e => {
-    const plikOkladki = e.okladka || e.nazwa + ' - ' + e.wykonawca;
-    const baseUrl = `${REPO_BASE}/okladki/${encodeURIComponent(plikOkladki)}`;
-    const thumb = `<img src="${baseUrl}.png" alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="if(this.src.endsWith('.png')){this.src=this.src.replace('.png','.jpg')}else{this.style.display='none';this.nextElementSibling.style.display='block';}"><span class="thumb-icon" style="display:none">🎸</span>`;
+    const thumb = `<img ${coverImageAttributes(e, 'block')} alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"><span class="thumb-icon" style="display:none">🎸</span>`;
 
     const isFav = favorites.has(e.id);
     const favBtn = `<button class="card-icon-btn card-icon-favorite${isFav ? ' is-favorite' : ''}" data-favorite-id="${e.id}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id},this);" aria-label="${isFav ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}" aria-pressed="${isFav}"><i class="ti ${isFav ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i></button>`;
