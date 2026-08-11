@@ -3444,18 +3444,19 @@ function loadExcel() {
       const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
       rawExcelRows = rows;
       dataValidationIssues = validateExcelRows(rows);
+      const cellText = value => String(value ?? '').trim();
 
       exercises = rows.map((r, i) => ({
         id: i,
-        nazwa:  (r['UTWÓR'] || '').trim(),
-        wykonawca: (r['WYKONAWCA'] || '').trim(),
-        yt:     (r['YOUTUBE'] || r['YT'] || '').trim(),
-        link:   (r['LINK DO DYSKU'] || r['Link do dysku'] || r['LINK'] || '#').trim(),
-        poziom: (r['Poziom'] || r['POZIOM'] || '').trim(),
-        opis:   (r['Opis'] || r['OPIS'] || '').trim(),
-        tagi:   (r['Tagi'] || r['TAGI'] || '').split(',').map(t => t.trim()).filter(Boolean),
+        nazwa:  cellText(r['UTWÓR']),
+        wykonawca: cellText(r['WYKONAWCA']),
+        yt:     cellText(r['YOUTUBE'] || r['YT']),
+        link:   cellText(r['LINK DO DYSKU'] || r['Link do dysku'] || r['LINK']) || '#',
+        poziom: cellText(r['Poziom'] || r['POZIOM']),
+        opis:   cellText(r['Opis'] || r['OPIS']),
+        tagi:   cellText(r['Tagi'] || r['TAGI']).split(',').map(t => t.trim()).filter(Boolean),
         data:   r['DATA'] ?? r['Data'] ?? '',
-        okladka:(r['OKŁADKA (NAZWA PLIKU)'] || '').trim(),
+        okladka:cellText(r['OKŁADKA (NAZWA PLIKU)']),
       })).filter(e => e.nazwa);
 
       // Populate wykonawcy
