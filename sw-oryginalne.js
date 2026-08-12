@@ -1,9 +1,9 @@
-const CACHE_NAME = 'oryginalne-opracowania-v2';
+const CACHE_NAME = 'oryginalne-opracowania-v3';
 const APP_SHELL = [
   './',
   './manifest-oryginalne.webmanifest',
-  './pwa-oryginalne-192.png',
-  './pwa-oryginalne-512.png'
+  './pwa-oryginalne-192-v2.png',
+  './pwa-oryginalne-512-v2.png'
 ];
 
 self.addEventListener('install', event => {
