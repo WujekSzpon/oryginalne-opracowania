@@ -1330,7 +1330,7 @@ const HASLO_HASH = '45824867057ad5fa21820ea9866c5da2ba9c67088b6cb391c81116ecaded
 const APP_CONFIG = Object.freeze({
   version: '2026.08.11',
   excelUrl: 'https://raw.githubusercontent.com/WujekSzpon/oryginalne-opracowania/main/KONSPEKT%20-%20ORYGINALNE%20OPRACOWANIA.xlsx',
-  repositoryBase: 'https://raw.githubusercontent.com/WujekSzpon/oryginalne-opracowania/main',
+  repositoryBase: 'https://wujekszpon.github.io/oryginalne-opracowania',
   productName: 'Oryginalne Aranżacje',
   contactEmail: 'tomaszczerniuk@gmail.com',
   reviewAppsScriptUrl: 'https://script.google.com/macros/s/AKfycbwvWlBF6u7UxVi5vCulYTtm_Z_gumekiDf_SJvlfJndHgIMjWGXsNYb0Vg6zGDa1XF_/exec',
@@ -2428,8 +2428,8 @@ let reviewPhotoDrag = null;
 let reviewFormOpenedAt = Date.now();
 let reviewAvatarStyle = 'male';
 const REVIEW_AVATAR_URLS = Object.freeze({
-  male: 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main/avatary/review-rock-avatar-female-male.jpg',
-  female: 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main/avatary/review-rock-avatar-female.png'
+  male: 'https://wujekszpon.github.io/wspolne-materialy/avatary/review-rock-avatar-female-male.jpg',
+  female: 'https://wujekszpon.github.io/wspolne-materialy/avatary/review-rock-avatar-female.png'
 });
 const reviewAvatarImages = { male: null, female: null };
 
@@ -4026,7 +4026,7 @@ async function exportCatalogPreview() {
 // ===== TESTOWY EKSPORT KATALOGU PDF — koniec =====
 
 // POPUPY: porady zachowują stary wygląd, a promocje korzystają ze wspólnej bazy i panelu graficznego.
-const SHARED_MATERIALS_BASE = 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main';
+const SHARED_MATERIALS_BASE = 'https://wujekszpon.github.io/wspolne-materialy';
 const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.xlsx`;
 const PROMOTION_CONTEXT = 'oryginalne';
 let PORADY = [], PROMOTIONS = [], tipRandomBag = [], promotionRandomBag = [], lastTipIndex = -1, lastPromotionIndex = -1, popupTimeout, promotionTimeout;
@@ -4067,7 +4067,7 @@ function nextRandomPromotion() {
   return PROMOTIONS[lastPromotionIndex];
 }
 
-const tipsDataPromise = fetch('https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/data/tresci.txt')
+const tipsDataPromise = fetch('https://wujekszpon.github.io/najlepsze-polskie-riffy/data/tresci.txt')
   .then(r => r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`)))
   .then(text => {
     const ps = text.split('REKLAMY:')[0].replace('PORADY:', '').trim();
